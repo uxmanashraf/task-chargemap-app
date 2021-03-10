@@ -61,7 +61,7 @@ When the user clicks on a marker, a detail view opens up and displays some addit
 
 The pop shows the following content, mapped to the following model attributes:
 
-| Name in pop up | model attribute (calulcated value)                                                                                  |
+| Name in pop up | model attribute (calculated value)                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Street         | chargingStation.address.street                                                                                      |
 | Zip            | chargingStation.address.zip                                                                                         |
@@ -82,10 +82,13 @@ The map content should be reloaded whenever the user enters another value for _m
 
 ### Example API requests
 
-| Objective                                                                                             | API query                                                                                                                                                  | 
-| ----------------------------------------------------------------------------------------------------  | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Retrieve all charging stations in 50km radius of a location in Rotterdam for all 3 connector types    | https://api.openchargemap.io/v3/poi/?output=json&camelcase=true&distance=50&distanceunit=KM&connectiontypeid=25,2,33&latitude=51.905445&longitude=4.466637 |
-| Retrieve all charging stations in 50km radius of a location in Rotterdam for connector type "Type 2"  | https://api.openchargemap.io/v3/poi/?output=json&camelcase=true&distance=50&distanceunit=KM&connectiontypeid=25&latitude=51.905445&longitude=4.466637      |
+#### Retrieve all charging stations in 50km radius of a location in Rotterdam for all 3 connector types
+
+https://api.openchargemap.io/v3/poi/?output=json&camelcase=true&distance=50&distanceunit=KM&connectiontypeid=25,2,33&latitude=51.905445&longitude=4.466637
+
+#### Retrieve all charging stations in 50km radius of a location in Rotterdam for connector type "Type 2"
+
+https://api.openchargemap.io/v3/poi/?output=json&camelcase=true&distance=50&distanceunit=KM&connectiontypeid=25&latitude=51.905445&longitude=4.466637
 
 ### Technology
 
