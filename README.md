@@ -57,9 +57,9 @@ The results will be presented as map markers in the map view. The color of the m
 
 **Bonus:** The markers should be grouped (clustered) to improve UX.
 
-When the user clicks on a marker, a detail view opens up and displays some additional info of the charging station, as shown in the picture.
+When the user clicks on a marker, a detail view (pop-up) opens up and displays some additional info of the charging station, as shown in the picture.
 
-The pop shows the following content, mapped to the following model attributes:
+The pop-up shows the following content, mapped to the following data model attributes:
 
 | Name in pop up | model attribute (calculated value)                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------------------- |
