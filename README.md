@@ -120,4 +120,4 @@ Either:
 * A buildable source code project, packaged as zip.
 * A git repository, for instance a fork of this repository with the source code of your application. 
 
-**Bonus:** Provide a simple docker image that a webserver (i.e. nginx) to host the web application.
+**Bonus:** Provide a simple docker image that contains a webserver (i.e. nginx) to host the web application.
