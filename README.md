@@ -48,7 +48,7 @@ The filter form contains:
   * CCS: value = 33
 
 The default and initial value for the _maximum distance_ field should be set to 100km.
-All checkboxes are initially un-checked and the query should take all values into account. Other connector types than the mentioned three should not be retrieved.
+All checkboxes are initially checked and the query should take all values into account. Other connector types than the mentioned three should not be retrieved.
 
 The results will be presented as map markers in the map view. The color of the marker depends on the current status of the charging station (represented by `chargingStation.connectors.N.available`):
 
@@ -78,7 +78,11 @@ The pop-up shows the following content, mapped to the following data model attri
 | Pricing info   | chargingStation.priceInfo                                                                                           |
 
 The initial view of the map has the users current position and a zoom factor that is adjusted by the _maximum distance_.
-The map content should be reloaded whenever the user enters another value for _maximum distance_ or changes the state of the checkboxes.
+The map content should be reloaded whenever the user:
+
+* enters another value for _maximum distance_
+* changes the state of the checkboxes
+* changes the map center
 
 ### Example API requests
 
