@@ -15,7 +15,7 @@ The objective of this little product is to lookup charging stations that are in 
 
 The API at https://openchargemap.org/site/develop/api should be used to search for charging stations. No additional data should be used in this project.
 
-The API provides data in a very noisy data model. We assume a application side data model entity with the name `chargingStation`. The following mapping should be applied:
+The API provides data in a very noisy data model. We assume an application side data model entity with the name `chargingStation`. The following mapping should be applied:
 
 | Description                | API model path                                | App model path                             | type   |
 | -------------------------  | --------------------------------------------- | ------------------------------------------ | ------ |
@@ -57,7 +57,7 @@ The results will be presented as map markers in the map view. The color of the m
 
 **Bonus:** The markers should be grouped (clustered) to improve UX.
 
-When the user clicks on a marker, a detail view (pop-up) opens up and displays some additional info of the charging station, as shown in the picture.
+When the user clicks on a marker, a detail view (pop-up) opens up and displays some additional info of the charging station, as shown in the wireframe picture.
 
 The pop-up shows the following content, mapped to the following data model attributes:
 
@@ -114,7 +114,7 @@ Please use typescript and according transpilation.
 
 ### Tests
 
-Choose some units that you would like add unit test for. Use a framework you are familiar with.
+Choose some units that you would like to add unit test for. Use a framework you are familiar with.
 If you have a lean approach for e2e test you can of course apply it to your project. 
 
 ## Deliverables
