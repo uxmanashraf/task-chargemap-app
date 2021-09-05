@@ -14,6 +14,7 @@ export const fetchChargingStationSuccess = ( rawData ) => {
         });
 
         return {
+            chargePointID: station.id,
             address: {
                 street: station.addressInfo.addressLine1,
                 zip: station.addressInfo.postcode,
@@ -32,6 +33,8 @@ export const fetchChargingStationSuccess = ( rawData ) => {
             available: station.statusType.isUserSelectable
         };
     });
+
+    
 
     return {
         type: actionTypes.FETCH_CHARGING_STATION_SUCCESS,
@@ -66,7 +69,7 @@ export const fetchChargingStation = (params) => {
         serverApi.get( '?' + Object.keys(queryParams).map((key) => [key, queryParams[key]].join('=')).join('&'))
             .then( res => {
                 if(res) {
-                    dispatch(fetchChargingStationSuccess(res));
+                    dispatch(fetchChargingStationSuccess(res.data));
                 } else {
                     dispatch(fetchChargingStationFail(res.data.error, false));
                 }

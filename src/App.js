@@ -2,23 +2,19 @@ import React, {Component} from "react";
 import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
 
+import MainLayout from './containers/MainLayout/MainLayout';
+
 class App extends Component {
 
 
-  componentDidMount() {
-    let params = {
-      distance: 50,
-      distanceunit: "KM",
-      connectiontypeid: "25,2,33",
-      latitude: 51.905445,
-      longitude: 4.466637
+    componentDidMount() {
     }
-    this.props.onFetchChargingStation(params);
-  }
 
-  render() {
-      return (<h1>chargemapapp</h1>);
-  }
+    render() {
+        return (
+            <MainLayout />
+        );
+    }
 }
 
 const mapStateToProps = state => {
