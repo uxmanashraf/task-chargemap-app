@@ -1,44 +1,11 @@
 import * as actionTypes from './actionTypes';
 import {serverApi} from '../../axiosHelper';
+import { parseChargingStationsApiData } from '../../utilities/api-parser';
 
-export const fetchChargingStationSuccess = ( rawData ) => {
-
-    let minChargingStation = rawData.map(station => {
-
-        let connectorsList = station.connections.map(connector => {
-            return {
-                number: connector.connectionType.id,
-                type: connector.connectionType.title,
-                maxPowerInKW: connector.powerKW
-            }
-        });
-
-        return {
-            chargePointID: station.id,
-            address: {
-                street: station.addressInfo.addressLine1,
-                zip: station.addressInfo.postcode,
-                town: station.addressInfo.town,
-                countryCode: station.addressInfo.country.isoCode
-            },
-            location: {
-                lat: station.addressInfo.latitude,
-                lon: station.addressInfo.longitude
-            },
-            operatorInfo: {
-                title: station.operatorName
-            },
-            priceInfo: station.usageCost,
-            connectors: connectorsList,
-            available: station.statusType.isUserSelectable
-        };
-    });
-
-    
-
+export const fetchChargingStationSuccess = ( chargingStationApiData ) => {
     return {
         type: actionTypes.FETCH_CHARGING_STATION_SUCCESS,
-        chargingStation: minChargingStation,
+        chargingStation: parseChargingStationsApiData(chargingStationApiData),
     };
 };
 
