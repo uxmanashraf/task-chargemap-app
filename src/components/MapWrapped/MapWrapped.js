@@ -4,7 +4,6 @@ import {
   LoadScript,
   Marker,
   InfoWindow,
-  OverlayView,
   MarkerClusterer,
 } from "@react-google-maps/api";
 
@@ -16,7 +15,6 @@ import Spinner from "../Spinner/Spinner";
 
 class MapWrapped extends Component {
   state = {
-    scriptLoaded: false,
     selectedChargePoint: null,
     hoveredChargingPoint: null,
     mapOptions: {
@@ -26,12 +24,16 @@ class MapWrapped extends Component {
     mapRef: null,
   };
 
-  scriptLoadedHandler = () => {
-    this.setState({ scriptLoaded: true });
-  };
-
+  /**
+   * setting bounds for google map
+   * @param {*} prevProps 
+   * @param {*} prevState 
+   */
   componentDidUpdate(prevProps, prevState) {
-    if(this.state.mapRef, prevProps.chargingStation !== this.props.chargingStation ) {
+    if (
+      (this.state.mapRef,
+      prevProps.chargingStation !== this.props.chargingStation)
+    ) {
       const bounds = new window.google.maps.LatLngBounds();
       this.props.chargingStation.map((chargePoint) =>
         bounds.extend({
@@ -39,20 +41,24 @@ class MapWrapped extends Component {
           lng: +chargePoint.location.lon,
         })
       );
-      this.state.mapRef.fitBounds(bounds)
+      this.state.mapRef.fitBounds(bounds);
     }
   }
 
-  fitBounds = (map) => {
-    // this.state.mapRef.fitBounds(bounds);
-  };
-
+  /**
+   * callback for Google Map loader
+   * take reference of loaded google map and stores it into state
+   * @param {*} map 
+   */
   mapLoadedHandler = (map) => {
-    this.setState({ mapRef: map }, function() {
-      this.fitBounds();
-    });
+    this.setState({ mapRef: map });
   };
 
+  /**
+   * stores selected Charging Point from Map card into state and calculate distance between user and selected charging point
+   * takes charginpoint object as param
+   * @param {*} chargingPoint 
+   */
   chargingPointSelectedHandler = (chargingPoint) => {
     this.setState({
       selectedChargePoint: chargingPoint,
@@ -60,6 +66,9 @@ class MapWrapped extends Component {
     this.calculateDistance(chargingPoint);
   };
 
+  /**
+   * calculates distance between user's location and selected charging point using google's distance matrix service
+   */
   calculateDistance = () => {
     const chargePointID = this.state.selectedChargePoint.chargePointID;
     if (this.props.userLocation) {
@@ -97,15 +106,15 @@ class MapWrapped extends Component {
     }
   };
 
+  /**
+   * removes selectedChargePoints reference from state
+   */
   infoWindowClosedHandler = () => this.setState({ selectedChargePoint: null });
 
-  getPixelPositionOffset = (offsetWidth, offsetHeight, labelAnchor) => {
-    return {
-      x: offsetWidth + labelAnchor.x,
-      y: offsetHeight + labelAnchor.y,
-    };
-  };
-
+  /**
+   * stores reference to hovered charging point
+   * @param {*} chargingPoint 
+   */
   markerHover = (chargingPoint) =>
     this.setState({
       hoveredChargingPoint: chargingPoint,
@@ -148,13 +157,15 @@ class MapWrapped extends Component {
     return (
       <LoadScript
         loadingElement={<Spinner />}
-        onLoad={this.scriptLoadedHandler}
         googleMapsApiKey={process.env.REACT_APP_GOOGLE_KEY}
       >
         <GoogleMap
-          id="map" 
-          ref='map'
-          defaultCenter={{lat: this.props.userLocation.lat, lng: this.props.userLocation.lon}}
+          id="map"
+          ref="map"
+          defaultCenter={{
+            lat: this.props.userLocation.lat,
+            lng: this.props.userLocation.lon,
+          }}
           onLoad={this.mapLoadedHandler}
           zoom={this.state.mapOptions.zoom}
           mapContainerStyle={mapContainerStyle}
@@ -164,7 +175,7 @@ class MapWrapped extends Component {
             <MarkerClusterer
               averageCenter
               enableRetinaIcons
-              minimumClusterSize = {3}
+              minimumClusterSize={3}
               options={{
                 imagePath:
                   "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",

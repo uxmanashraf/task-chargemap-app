@@ -30,6 +30,9 @@ const InfoPopUp = (props) => {
     };
   });
 
+  /**
+   * to display skeleton if distance not calculated yet
+   */
   const distanceElem = props.chargePoint.calculatedDistance ? (
     (props.chargePoint.calculatedDistance / 1000).toFixed(1) + " KM"
   ) : (

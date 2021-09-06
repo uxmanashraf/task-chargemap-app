@@ -20,6 +20,9 @@ class MainLayout extends Component {
     userLocation: null,
   };
 
+  /**
+   * will request for user's location
+   */
   componentDidMount() {
     let that = this;
     if (navigator.geolocation) {
@@ -55,6 +58,9 @@ class MainLayout extends Component {
     }
   }
 
+  /**
+   * will trigger action of fetching charging station data from API
+   */
   fetchChargingStationData = () => {
     if (this.state.userLocation && !this.props.loading) {
       let connectiontypeids = [];
@@ -75,6 +81,10 @@ class MainLayout extends Component {
     }
   };
 
+  /**
+   * onChange method for filter checkbox 
+   * @param {*} event 
+   */
   onfilterCheckBoxesChanged = (event) => {
     if (!this.props.loading) {
       this.setState(
@@ -99,6 +109,11 @@ class MainLayout extends Component {
     }
   };
 
+
+  /**
+   * onChange method for distance value changed
+   * @param {int} value 
+   */
   onDistanceChanged = (value) => {
     if (!this.props.loading) {
       this.setState({ distanceRange: +value });
