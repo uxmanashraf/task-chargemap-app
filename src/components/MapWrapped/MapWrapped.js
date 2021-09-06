@@ -24,69 +24,33 @@ class MapWrapped extends Component {
       zoom: 8,
     },
     mapRef: null,
-    userLocation: null,
   };
-
-  componentDidMount() {
-    let comp = this;
-    if (navigator.geolocation) {
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then(function (result) {
-          if (result.state === "granted") {
-            navigator.geolocation.getCurrentPosition(
-              function (position) {
-                const location = {
-                  lat: position.coords.latitude,
-                  lon: position.coords.longitude,
-                };
-                comp.setState({
-                  userLocation: { ...location },
-                });
-              },
-              function (error) {
-                // console.error("Error Code = " + error.code + " - " + error.message);
-              }
-            );
-          } else if (result.state === "prompt") {
-            navigator.geolocation.getCurrentPosition(function (
-              success,
-              errors,
-              options
-            ) {
-              // console.log(success, errors, options);
-            });
-          } else if (result.state === "denied") {
-            //If denied then you have to show instructions to enable location
-            // console.log(result);
-          }
-          result.onchange = function () {
-            // console.log(result.state);
-          };
-        });
-    } else {
-      // console.log("not available");
-    }
-  }
 
   scriptLoadedHandler = () => {
     this.setState({ scriptLoaded: true });
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state.mapRef, prevProps.chargingStation !== this.props.chargingStation ) {
+      const bounds = new window.google.maps.LatLngBounds();
+      this.props.chargingStation.map((chargePoint) =>
+        bounds.extend({
+          lat: +chargePoint.location.lat,
+          lng: +chargePoint.location.lon,
+        })
+      );
+      this.state.mapRef.fitBounds(bounds)
+    }
+  }
+
   fitBounds = (map) => {
-    const bounds = new window.google.maps.LatLngBounds();
-    this.props.chargingStation.map((chargePoint) =>
-      bounds.extend({
-        lat: +chargePoint.location.lat,
-        lng: +chargePoint.location.lon,
-      })
-    );
-    map.fitBounds(bounds);
+    // this.state.mapRef.fitBounds(bounds);
   };
 
   mapLoadedHandler = (map) => {
-    this.fitBounds(map);
-    this.setState({ mapRef: map });
+    this.setState({ mapRef: map }, function() {
+      this.fitBounds();
+    });
   };
 
   chargingPointSelectedHandler = (chargingPoint) => {
@@ -98,10 +62,10 @@ class MapWrapped extends Component {
 
   calculateDistance = () => {
     const chargePointID = this.state.selectedChargePoint.chargePointID;
-    if (this.state.userLocation) {
+    if (this.props.userLocation) {
       const origin = new window.google.maps.LatLng(
-        this.state.userLocation.lat,
-        this.state.userLocation.lon
+        this.props.userLocation.lat,
+        this.props.userLocation.lon
       );
       const destination = new window.google.maps.LatLng(
         this.state.selectedChargePoint.location.lat,
@@ -179,26 +143,28 @@ class MapWrapped extends Component {
 
     let mapContents = <Spinner />;
 
+    console.log("user location", this.props.userLocation);
+
     return (
       <LoadScript
         loadingElement={<Spinner />}
         onLoad={this.scriptLoadedHandler}
-        googleMapsApiKey={"AIzaSyASm_pdPPMnKA3vSjM_yYi45h6xLW9BWZ0"}
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_KEY}
       >
         <GoogleMap
-          id="map"
-          ref="googleMap"
+          id="map" 
+          ref='map'
+          defaultCenter={{lat: this.props.userLocation.lat, lng: this.props.userLocation.lon}}
           onLoad={this.mapLoadedHandler}
           zoom={this.state.mapOptions.zoom}
           mapContainerStyle={mapContainerStyle}
-          defaultCenter={this.state.mapOptions.center}
-          center={this.state.mapOptions.center}
           options={options}
         >
           <React.Fragment>
             <MarkerClusterer
               averageCenter
               enableRetinaIcons
+              minimumClusterSize = {3}
               options={{
                 imagePath:
                   "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",

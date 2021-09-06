@@ -31,13 +31,13 @@ const InfoPopUp = (props) => {
   });
 
   const distanceElem = props.chargePoint.calculatedDistance ? (
-    (props.chargePoint.calculatedDistance/1000).toFixed(1) + " KM"
+    (props.chargePoint.calculatedDistance / 1000).toFixed(1) + " KM"
   ) : (
     <Skeleton.Button active={true} size="small" shape="round" block={false} />
   );
 
   return (
-    <Card bordered={false} style={{ width: 450 }}>
+    <Card bordered={false} style={{ width: 350 }}>
       <Row>
         <Col span={24}>
           <h4>
@@ -68,13 +68,22 @@ const InfoPopUp = (props) => {
           {props.chargePoint.location.lon}
         </Col>
 
-        <Col className="gutter-row" span={12}></Col>
+        <Col className="gutter-row" span={6}>
+          <strong>Available</strong>
+        </Col>
+        <Col className="gutter-row" span={6}>
+          {props.chargePoint.available ? "Yes" : "No"}
+        </Col>
 
         <Col className="gutter-row" span={6}>
           <strong>Distance</strong>
         </Col>
         <Col className="gutter-row" span={6}>
           {distanceElem}
+        </Col>
+
+        <Col className="gutter-row" span={24}>
+          <strong>Connectors</strong>
         </Col>
 
         <Col className="gutter-row" span={18}>
@@ -88,10 +97,14 @@ const InfoPopUp = (props) => {
         </Col>
         <Col className="gutter-row" span={6}></Col>
       </Row>
-
-      <p>
-        <strong>Available</strong> {props.chargePoint.available ? "Yes" : "No"}
-      </p>
+      <Row>
+        <Col className="gutter-row" span={6}>
+          <strong>Pricing info</strong>
+        </Col>
+        <Col className="gutter-row" span={6}>
+          {props.chargePoint.priceInfo?props.chargePoint.priceInfo: "N/A"}
+        </Col>
+      </Row>
     </Card>
   );
 };
