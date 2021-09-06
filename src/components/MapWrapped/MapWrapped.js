@@ -24,7 +24,50 @@ class MapWrapped extends Component {
       zoom: 8,
     },
     mapRef: null,
+    userLocation: null,
   };
+
+  componentDidMount() {
+    let comp = this;
+    if (navigator.geolocation) {
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then(function (result) {
+          if (result.state === "granted") {
+            navigator.geolocation.getCurrentPosition(
+              function (position) {
+                const location = {
+                  lat: position.coords.latitude,
+                  lon: position.coords.longitude,
+                };
+                comp.setState({
+                  userLocation: { ...location },
+                });
+              },
+              function (error) {
+                // console.error("Error Code = " + error.code + " - " + error.message);
+              }
+            );
+          } else if (result.state === "prompt") {
+            navigator.geolocation.getCurrentPosition(function (
+              success,
+              errors,
+              options
+            ) {
+              // console.log(success, errors, options);
+            });
+          } else if (result.state === "denied") {
+            //If denied then you have to show instructions to enable location
+            // console.log(result);
+          }
+          result.onchange = function () {
+            // console.log(result.state);
+          };
+        });
+    } else {
+      // console.log("not available");
+    }
+  }
 
   scriptLoadedHandler = () => {
     this.setState({ scriptLoaded: true });
@@ -50,6 +93,44 @@ class MapWrapped extends Component {
     this.setState({
       selectedChargePoint: chargingPoint,
     });
+    this.calculateDistance(chargingPoint);
+  };
+
+  calculateDistance = () => {
+    const chargePointID = this.state.selectedChargePoint.chargePointID;
+    if (this.state.userLocation) {
+      const origin = new window.google.maps.LatLng(
+        this.state.userLocation.lat,
+        this.state.userLocation.lon
+      );
+      const destination = new window.google.maps.LatLng(
+        this.state.selectedChargePoint.location.lat,
+        this.state.selectedChargePoint.location.lon
+      );
+
+      const service = new window.google.maps.DistanceMatrixService();
+
+      const request = {
+        origins: [origin],
+        destinations: [destination],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false,
+      };
+
+      service.getDistanceMatrix(request).then((response) => {
+        if (this.state.selectedChargePoint) {
+          let modChargePoint = { ...this.state.selectedChargePoint };
+          modChargePoint.calculatedDistance =
+            chargePointID == modChargePoint.chargePointID
+              ? response.rows[0].elements[0].distance.value
+              : null;
+
+          this.setState({ selectedChargePoint: { ...modChargePoint } });
+        }
+      });
+    }
   };
 
   infoWindowClosedHandler = () => this.setState({ selectedChargePoint: null });
@@ -59,51 +140,6 @@ class MapWrapped extends Component {
       x: offsetWidth + labelAnchor.x,
       y: offsetHeight + labelAnchor.y,
     };
-  };
-
-  setMarkerLabels = (markerLables) => {
-    this.setState({
-      markerLabels: markerLables,
-    });
-  };
-
-  markerLabelsHandler = (clusterer) => {
-    const markerLabelsList = [];
-
-    const labelAnchor = { x: -30, y: 0 };
-
-    let allClusters = clusterer.clusters,
-      allMarkers;
-    allClusters.forEach((cluster, clusterIndex) => {
-      allMarkers = cluster.getMarkers();
-      allMarkers.forEach((marker, MarkerIndex) => {
-        if (allMarkers.length < 2) {
-          markerLabelsList.push(
-            <OverlayView
-              key={"m_" + clusterIndex + "_" + MarkerIndex}
-              position={marker.position}
-              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-              getPixelPositionOffset={(x, y) =>
-                this.getPixelPositionOffset(x, y, labelAnchor)
-              }
-            >
-              <div
-                style={{
-                  background: `#203254`,
-                  padding: `7px 12px`,
-                  fontSize: "11px",
-                  color: `white`,
-                  borderRadius: "4px",
-                }}
-              >
-                {marker.title}
-              </div>
-            </OverlayView>
-          );
-        }
-      });
-    });
-    this.setMarkerLabels(markerLabelsList);
   };
 
   markerHover = (chargingPoint) =>
